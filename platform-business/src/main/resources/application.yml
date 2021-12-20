@@ -1,0 +1,55 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/data_platform?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowLoadLocalInfile=true&allowMultiQueries=true
+    username: root
+    password: 12345678
+  #  【Redis Cluster，集群模式下必选】
+  redis:
+      nodes: localhost:6379
+
+  #【session配置，store-type设置为redis时，启用集群session共享】
+  session:
+    timeout: PT1800s
+    store-type: none
+    redis:
+      namespace: apps-session
+  #【rabbitMQ设置】
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    publisher-confirm-type: correlated
+
+  #【mail设置】
+  mail:
+    host: smtp.163.com
+    username: yoon286@163.com
+    password: LCVFXIHOKMUDMAWD
+    port: 587
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+
+#【MyBatis配置】
+mybatis:
+  type-aliases-package: com.hypers.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+
+
+crius:
+  #【国际化文件，不填默认i18n/message】
+  messages:
+    basenames:
+      - i18n/messages
+
+
+
+
+
+

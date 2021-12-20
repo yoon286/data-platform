@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hypers.dao.RawSourceDao">
+
+    <resultMap id="rawSourceMapper" type="com.hypers.entity.RawSource">
+        <id column="id" property="id"/>
+        <result column="url" property="url"/>
+        <result column="file_name" property="fileName"/>
+        <result column="file_path" property="filePath"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="wareHousingMapper" type="com.hypers.entity.WareHousing">
+        <id column="id" property="id"/>
+        <result column="file" property="file"/>
+        <result column="table_name" property="tableName"/>
+        <result column="data_base" property="dataBase"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <association property="rawSource" javaType="com.hypers.entity.vo.IdRawSourcePathVo">
+            <id column="raw_source_id" property="id"/>
+            <result column="raw_source_path" property="rawSourcePath"/>
+        </association>
+    </resultMap>
+
+    <select id="find" resultMap="rawSourceMapper">
+        select *
+        from def_raw_source
+    </select>
+
+    <select id="findOne" resultMap="rawSourceMapper">
+        select *
+        from def_raw_source
+        where id = #{id}
+    </select>
+
+    <insert id="save" keyProperty="id" useGeneratedKeys="true">
+        insert into def_raw_source (id, url, file_name, file_path, status)
+        VALUES (#{e.id}, #{e.url}, #{e.fileName}, #{e.filePath}, #{e.status})
+    </insert>
+
+    <select id="inbound">
+        CREATE DATABASE IF NOT EXISTS ${e.dataBase} default character set utf8mb4 collate utf8mb4_unicode_ci;
+        USE ${e.dataBase};
+        DROP TABLE IF EXISTS ${e.tableName};
+        CREATE TABLE ${e.tableName}
+        (
+        <foreach collection="e.header" item="header" separator=",">
+            `${header}` varchar(50)
+        </foreach>
+        ) ENGINE = InnoDB
+        CHARACTER SET = utf8mb4
+        COLLATE = utf8mb4_general_ci COMMENT = '自定义表格'
+        ROW_FORMAT = Dynamic;
+        load data local infile '${e.file}' INTO TABLE ${e.tableName} FIELDS TERMINATED BY ','
+        OPTIONALLY ENCLOSED BY '"'
+        LINES TERMINATED BY '\n'
+        ignore 1 lines
+    </select>
+
+    <select id="findInboundRecords" resultMap="wareHousingMapper">
+        select *, source.file_path as raw_source_path
+        from def_warehousing warehousing
+                 left join def_raw_source source on warehousing.raw_source_id = source.id;
+    </select>
+
+    <insert id="saveInboundRecords" keyProperty="id" useGeneratedKeys="true">
+        insert into def_warehousing (raw_source_id, file, table_name, data_base)
+        VALUES (#{e.rawSource.id}, #{e.file}, #{e.tableName}, #{e.dataBase})
+    </insert>
+
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hypers.dao.MetaDataDao">
+
+    <resultMap id="metaDataMapper" type="com.hypers.entity.MetaData">
+        <id column="id" property="id"/>
+        <result column="table_name" property="tableName"/>
+        <result column="data_base" property="dataBase"/>
+        <result column="column" property="column"/>
+        <result column="row" property="row"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <association property="rawSource" javaType="com.hypers.entity.vo.IdRawSourcePathVo">
+            <id column="raw_source_id" property="id"/>
+            <result column="raw_source_path" property="rawSourcePath"/>
+        </association>
+    </resultMap>
+
+    <select id="find" resultMap="metaDataMapper">
+        select *, drs.file_path as raw_source_path
+        from def_meta_data dmd
+                 left join def_raw_source drs on dmd.raw_source_id = drs.id
+    </select>
+
+    <select id="findOne" resultMap="metaDataMapper">
+        select *, drs.file_path as raw_source_path
+        from def_meta_data dmd
+                 left join def_raw_source drs on dmd.raw_source_id = drs.id
+        where dmd.id = #{id}
+    </select>
+
+
+    <insert id="save" keyProperty="id" useGeneratedKeys="true">
+        insert into def_meta_data (raw_source_id, table_name, data_base, `column`, `row`)
+        VALUES (#{e.rawSource.id}, #{e.tableName}, #{e.dataBase}, #{e.column}, #{e.row})
+    </insert>
+
+
+</mapper>

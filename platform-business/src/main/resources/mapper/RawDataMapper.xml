@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hypers.dao.RawDataDao">
+    <resultMap id="rawDataResultMap" type="com.hypers.entity.RawData">
+        <id column="id" property="id"/>
+        <result column="sql" property="sql"/>
+        <result column="process_time" property="processTime"/>
+        <result column="operation" property="operation"/>
+        <association property="metaData" javaType="com.hypers.entity.vo.IdMetaDataVo">
+            <id column="meta_data_id" property="metaDataId"/>
+            <result column="table_name" property="tableName"/>
+            <result column="data_base" property="dataBase"/>
+        </association>
+    </resultMap>
+
+
+    <insert id="save">
+        insert into log_raw_data (meta_data_id, operation, `sql`)
+        values (#{e.metaData.metaDataId}, #{e.operation}, #{e.sql})
+
+    </insert>
+
+    <select id="findById" resultMap="rawDataResultMap">
+        select *,dmd.data_base as data_base,dmd.table_name as table_name
+        from log_raw_data lrd left join def_meta_data dmd on dmd.id = lrd.meta_data_id
+        where meta_data_id = #{id}
+    </select>
+</mapper>
