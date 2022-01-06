@@ -12,8 +12,8 @@ import com.hypers.entity.RawSource;
 import com.hypers.entity.WareHousing;
 import com.hypers.service.MetaDataService;
 import com.hypers.service.RawSourceService;
-import io.netty.util.internal.StringUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +28,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RawSourceServiceImpl extends AbstractBaseService<RawSource, RawSourceDao> implements RawSourceService {
 
     private final MetaDataService metaDataService;
 
     @Override
     public void inbound(WareHousing wareHousing) {
+        log.info("inbounding......");
         //设置文件路径
         RawSource source = getDao().findOne(wareHousing.getRawSource().getId());
         wareHousing.setFile(StrUtil.replace(source.getFilePath(), "\\", "\\\\"));
@@ -57,15 +59,18 @@ public class RawSourceServiceImpl extends AbstractBaseService<RawSource, RawSour
         metaData.setRow(data.getRowCount() - 1);
         metaData.setColumn(header.size());
         metaDataService.save(metaData);
+        log.info("inbound completed......");
     }
 
     @Override
     public List<WareHousing> findInboundRecords(WareHousing wareHousing) {
+        log.info("find inbound records......");
         return getDao().findInboundRecords(wareHousing);
     }
 
     @Override
     public void saveInboundRecords(WareHousing wareHousing) {
+        log.info("save inbound records......");
         getDao().saveInboundRecords(wareHousing);
     }
 

@@ -6,6 +6,7 @@ import com.hypers.entity.WareHousing;
 import com.hypers.entity.enums.Status;
 import com.hypers.service.RawSourceService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ import java.io.*;
  */
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 public class SpiderController extends AbstractBaseController<RawSource, RawSourceService> {
 
@@ -53,6 +55,8 @@ public class SpiderController extends AbstractBaseController<RawSource, RawSourc
 
         }
 
+        log.info("start spider...");
+
         //记录爬虫信息
         return super.save(rawSource, result);
 
@@ -63,6 +67,9 @@ public class SpiderController extends AbstractBaseController<RawSource, RawSourc
         if (bindingResult.hasErrors()) {
             return bindingResult;
         }
+
+        log.info("find spider records...");
+
         return super.find(rawSource);
     }
 

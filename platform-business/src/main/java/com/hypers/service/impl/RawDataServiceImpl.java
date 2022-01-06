@@ -7,6 +7,7 @@ import com.hypers.entity.RawData;
 import com.hypers.service.MetaDataService;
 import com.hypers.service.RawDataService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RawDataServiceImpl extends AbstractBaseService<RawData, RawDataDao> implements RawDataService {
 
     private final MetaDataService metaDataService;
@@ -47,6 +49,9 @@ public class RawDataServiceImpl extends AbstractBaseService<RawData, RawDataDao>
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        log.info("process data completed......");
+
         return result;
 
 

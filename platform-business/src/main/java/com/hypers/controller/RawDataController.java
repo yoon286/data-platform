@@ -3,6 +3,7 @@ package com.hypers.controller;
 import com.hypers.crius.enhance.AbstractBaseController;
 import com.hypers.entity.RawData;
 import com.hypers.service.RawDataService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,9 @@ import javax.validation.Valid;
  * @author Lynne
  * @date 2021/12/8
  */
+
 @RestController
+@Slf4j
 public class RawDataController extends AbstractBaseController<RawData, RawDataService> {
 
     /**
@@ -37,6 +40,7 @@ public class RawDataController extends AbstractBaseController<RawData, RawDataSe
      */
     @GetMapping("/api/meta/data/{id}/operation")
     public Object find(@PathVariable Long id){
+        log.info("find operation records of selected meta data...");
         return getService().findById(id);
     }
 
